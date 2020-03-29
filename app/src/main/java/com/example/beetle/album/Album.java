@@ -39,7 +39,9 @@ public class Album implements Grid {
         cells[r][c] = getCell(r, c) == Cell.EMPTY ? Cell.WALL : Cell.EMPTY;
         if (cells[r][c] == Cell.WALL) {
             Queue<Move> q = new ArrayDeque<>();
-            q.add(new Move(0, 0));
+            if (r != 0 || c != 0) {
+                q.add(new Move(0, 0));
+            }
             boolean[][] visited = new boolean[n][m];
             visited[0][0] = true;
             Vector[] nei = new Vector[]{

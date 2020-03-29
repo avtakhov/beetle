@@ -1,6 +1,7 @@
 package com.example.beetle;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.beetle.album.*;
+import com.example.beetle.base.Pair;
 import com.example.beetle.runner.*;
 
 import java.util.HashMap;
@@ -30,15 +32,14 @@ public class Game extends AppCompatActivity {
     Runner runner;
     boolean isRunning = false;
 
-    void moveBack(ImageView beetle, CustomGridView table) {
+    void moveBack(ImageView beetle, CustomGridView table, boolean isNeeded) {
         // ImageView beetle = findViewById(R.id.beetle);
-        if (!isRunning) {
-            beetle.animate().translationX(0).translationY(getResources().getDimension(R.dimen.bar_height) - table.computeVerticalScrollOffset()).rotation(180).start();
+        if (isNeeded) {
+            beetle.animate().translationX(0).translationY(getResources().getDimension(R.dimen.bar_height) - table.computeVerticalScrollOffset()).rotation(0).start();
 
         }
     }
 
-    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +49,6 @@ public class Game extends AppCompatActivity {
         if (this.getActionBar() != null) {
             this.getActionBar().hide();
         }
-
 
         grid = new Album(
                 this.getResources().getInteger(R.integer.row_count),
@@ -77,7 +77,7 @@ public class Game extends AppCompatActivity {
 
         final CustomGridView table = findViewById(R.id.table);
         table.setAdapter(adapter);
-        moveBack(beetle, table);
+        moveBack(beetle, table, true);
         table.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -93,7 +93,7 @@ public class Game extends AppCompatActivity {
         table.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                moveBack(beetle, table);
+                moveBack(beetle, table, !isRunning);
             }
         });
 
@@ -110,30 +110,31 @@ public class Game extends AppCompatActivity {
         run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                moveBack(beetle, table, true);
+                isRunning = true;
                 count[0] = 0;
                 counter.setText(String.valueOf(count[0]));
-                isRunning = true;
-                List<Vector> moves = runner.run();
-                final Iterator<Vector> it = moves.iterator();
+                List<Pair<Move, Vector>> moves = runner.run();
+                final Iterator<Pair<Move, Vector>> it = moves.iterator();
                 Runnable draw = new Runnable() {
                     @Override
                     public void run() {
                         if (!it.hasNext()) {
                             isRunning = false;
-                            moveBack(beetle, table);
+                            moveBack(beetle, table, true);
                             return;
                         }
                         count[0]++;
                         counter.setText(String.valueOf(count[0]));
-                        Vector vector = it.next();
+                        Pair<Move, Vector> move = it.next();
 
                         int rotation;
 
-                        if (vector.getDx() == 1) {
+                        if (move.second.getDx() == 1) {
                             rotation = 180;
-                        } else if (vector.getDx() == -1) {
+                        } else if (move.second.getDx() == -1) {
                             rotation = 0;
-                        } else if (vector.getDy() == 1) {
+                        } else if (move.second.getDy() == 1) {
                             rotation = 90;
                         } else {
                             rotation = 270;
@@ -143,8 +144,8 @@ public class Game extends AppCompatActivity {
 
                         beetle
                                 .animate()
-                                .translationXBy(adapter.getItemSize() * vector.getDy())
-                                .translationYBy(adapter.getItemSize() * vector.getDx())
+                                .translationX(adapter.getItemSize() * move.first.getC())
+                                .translationY(adapter.getItemSize() * move.first.getR() + getResources().getDimension(R.dimen.bar_height) - table.computeVerticalScrollOffset())
                                 .setDuration(getResources().getInteger(R.integer.speed))
                                 .withEndAction(this)
                                 .start();
@@ -155,5 +156,13 @@ public class Game extends AppCompatActivity {
             }
         });
     }
+
+    /*
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return grid;
+    }
+    */
+
 
 }

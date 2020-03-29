@@ -2,6 +2,7 @@ package com.example.beetle.runner;
 
 import com.example.beetle.album.Cell;
 import com.example.beetle.album.Grid;
+import com.example.beetle.base.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,8 @@ public class BeetleRunner implements Runner {
     };
 
     @Override
-    public List<Vector> run() {
-        ArrayList<Vector> res = new ArrayList<>();
+    public List<Pair<Move, Vector>> run() {
+        ArrayList<Pair<Move, Vector>> res = new ArrayList<>();
         int[][] count = new int[grid.getN()][grid.getM()];
         Move cur = new Move(0, 0);
         while (cur.getR() + 1 != grid.getN() || cur.getC() + 1 != grid.getM()) {
@@ -37,9 +38,8 @@ public class BeetleRunner implements Runner {
                     bestVector = vector;
                 }
             }
-            res.add(bestVector);
             assert bestVector != null;
-            cur = cur.add(bestVector);
+            res.add(new Pair<>(cur = cur.add(bestVector), bestVector));
         }
         return res;
     }
