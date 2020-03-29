@@ -67,6 +67,15 @@ public class Album implements Grid {
     }
 
     @Override
+    public void clear() {
+        for (int i = 0; i < getN(); i++) {
+            for (int j = 0; j < getM(); j++) {
+                cells[i][j] = Cell.EMPTY;
+            }
+        }
+    }
+
+    @Override
     public Cell getCell(int r, int c) {
         return cells[r][c];
     }

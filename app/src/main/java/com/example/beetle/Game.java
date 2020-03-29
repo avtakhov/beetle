@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +56,9 @@ public class Game extends AppCompatActivity {
 
         runner = new BeetleRunner(grid);
 
+        final TextView counter = findViewById(R.id.counter);
+        final int[] count = {0};
+
         final CustomAdapter adapter = new CustomAdapter(
                 this,
                 grid,
@@ -91,10 +96,21 @@ public class Game extends AppCompatActivity {
             }
         });
 
+        ImageButton clear = findViewById(R.id.clear);
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                grid.clear();
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         Button run = findViewById(R.id.run);
         run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                count[0] = 0;
+                counter.setText(count[0] + "");
                 isRunning = true;
                 List<Move> moves = runner.run();
                 moves.add(new Move(0, 0));
@@ -106,6 +122,8 @@ public class Game extends AppCompatActivity {
                             isRunning = false;
                             return;
                         }
+                        count[0]++;
+                        counter.setText(count[0] + "");
                         Move move = it.next();
                         beetle
                                 .animate()
