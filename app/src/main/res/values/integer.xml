@@ -2,4 +2,5 @@
 <resources>
     <integer name="row_count">20</integer>
     <integer name="column_count">10</integer>
+    <integer name="speed">30</integer>
 </resources>

@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface Runner {
 
-    List<Move> run();
+    List<Vector> run();
 
 }

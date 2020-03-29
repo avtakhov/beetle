@@ -14,29 +14,32 @@ public class BeetleRunner implements Runner {
         this.grid = grid;
     }
 
+    private final static Vector[] nei = {
+            new Vector(1, 0),
+            new Vector(0, 1),
+            new Vector(-1, 0),
+            new Vector(0, -1)
+    };
+
     @Override
-    public List<Move> run() {
-        ArrayList<Move> res = new ArrayList<>();
-        Vector[] nei = {
-                new Vector(1, 0),
-                new Vector(0, 1),
-                new Vector(-1, 0),
-                new Vector(0, -1)
-        };
+    public List<Vector> run() {
+        ArrayList<Vector> res = new ArrayList<>();
         int[][] count = new int[grid.getN()][grid.getM()];
         Move cur = new Move(0, 0);
         while (cur.getR() + 1 != grid.getN() || cur.getC() + 1 != grid.getM()) {
             count[cur.getR()][cur.getC()]++;
-            Move bestMove = null;
+            Vector bestVector = null;
             int bestCount = Integer.MAX_VALUE;
             for (Vector vector : nei) {
                 Move move = cur.add(vector);
                 if (grid.isValid(move) && count[move.getR()][move.getC()] < bestCount && grid.getCell(move) == Cell.EMPTY) {
                     bestCount = count[move.getR()][move.getC()];
-                    bestMove = move;
+                    bestVector = vector;
                 }
             }
-            res.add(cur = bestMove);
+            res.add(bestVector);
+            assert bestVector != null;
+            cur = cur.add(bestVector);
         }
         return res;
     }

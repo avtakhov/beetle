@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Beetle runs</string>
 
     <string name="title_activity_game">Game</string>
     <string name="dummy_button">Dummy Button</string>

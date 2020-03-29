@@ -33,7 +33,8 @@ public class Game extends AppCompatActivity {
     void moveBack(ImageView beetle, CustomGridView table) {
         // ImageView beetle = findViewById(R.id.beetle);
         if (!isRunning) {
-            beetle.animate().translationX(0).translationY(getResources().getDimension(R.dimen.bar_height) - table.computeVerticalScrollOffset()).start();
+            beetle.animate().translationX(0).translationY(getResources().getDimension(R.dimen.bar_height) - table.computeVerticalScrollOffset()).rotation(180).start();
+
         }
     }
 
@@ -96,7 +97,7 @@ public class Game extends AppCompatActivity {
             }
         });
 
-        ImageButton clear = findViewById(R.id.clear);
+        ImageView clear = findViewById(R.id.clear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,31 +106,46 @@ public class Game extends AppCompatActivity {
             }
         });
 
-        Button run = findViewById(R.id.run);
+        ImageView run = findViewById(R.id.run);
         run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 count[0] = 0;
-                counter.setText(count[0] + "");
+                counter.setText(String.valueOf(count[0]));
                 isRunning = true;
-                List<Move> moves = runner.run();
-                moves.add(new Move(0, 0));
-                final Iterator<Move> it = moves.iterator();
+                List<Vector> moves = runner.run();
+                final Iterator<Vector> it = moves.iterator();
                 Runnable draw = new Runnable() {
                     @Override
                     public void run() {
                         if (!it.hasNext()) {
                             isRunning = false;
+                            moveBack(beetle, table);
                             return;
                         }
                         count[0]++;
-                        counter.setText(count[0] + "");
-                        Move move = it.next();
+                        counter.setText(String.valueOf(count[0]));
+                        Vector vector = it.next();
+
+                        int rotation;
+
+                        if (vector.getDx() == 1) {
+                            rotation = 180;
+                        } else if (vector.getDx() == -1) {
+                            rotation = 0;
+                        } else if (vector.getDy() == 1) {
+                            rotation = 90;
+                        } else {
+                            rotation = 270;
+                        }
+
+                        beetle.animate().rotation(rotation);
+
                         beetle
                                 .animate()
-                                .translationX(adapter.getItemSize() * move.getC())
-                                .translationY(getResources().getDimension(R.dimen.bar_height) + adapter.getItemSize() * move.getR() - table.computeVerticalScrollOffset())
-                                .setDuration(50)
+                                .translationXBy(adapter.getItemSize() * vector.getDy())
+                                .translationYBy(adapter.getItemSize() * vector.getDx())
+                                .setDuration(getResources().getInteger(R.integer.speed))
                                 .withEndAction(this)
                                 .start();
 

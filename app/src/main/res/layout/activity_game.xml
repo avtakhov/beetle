@@ -27,21 +27,34 @@
         android:layerType="hardware"
         app:layout_constraintStart_toStartOf="@+id/table"
         app:layout_constraintTop_toBottomOf="@+id/bar"
-        app:srcCompat="@android:drawable/btn_star" />
+        app:srcCompat="@drawable/icon" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bar_height"
-        android:background="@android:color/background_light"
+        android:background="@color/barBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageButton
+        <ImageView
+            android:id="@+id/run"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/barBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/clear"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@android:drawable/ic_media_play" />
+
+        <ImageView
             android:id="@+id/clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@color/barBackground"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@android:drawable/ic_menu_delete" />
@@ -53,16 +66,10 @@
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
             android:text="0"
+            android:textColor="?attr/colorControlActivated"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/run"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/run"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
